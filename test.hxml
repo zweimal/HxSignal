@@ -1,0 +1,5 @@
+-main Test
+-cp src 
+-cp test 
+-debug
+-swf bin/signal.swf
