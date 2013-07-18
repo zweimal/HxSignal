@@ -1,0 +1,5 @@
+-main Test
+-cp src 
+-cp test 
+-java bin/java
+-debug

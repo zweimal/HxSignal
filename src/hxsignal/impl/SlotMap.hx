@@ -34,8 +34,12 @@ class SlotMap<SlotType>
 {
 	public var length (get, never) : Int;
 	
-	public var groups : TreeMap<Int, ConnectionList<SlotType>>;
+	public var groups : TreeMap < Int, ConnectionList<SlotType> > ;
+	#if cpp	
+	var slots : TreeMap<SlotType, Connection<SlotType>>;
+	#else
 	var slots : ObjectMap<Dynamic, Connection<SlotType>>;
+	#end
 	
 	public function new() 
 	{
@@ -44,7 +48,11 @@ class SlotMap<SlotType>
 	
 	public function clear() : Void
 	{
+		#if cpp
+		slots = new TreeMap();
+		#else
 		slots = new ObjectMap();
+		#end
 		groups = new TreeMap();
 		groups.set(0, new LinkedList());
 	}
@@ -53,6 +61,7 @@ class SlotMap<SlotType>
 	{
 		if (at == null)
 			at = AtBack;
+			
 		slots.set(con.slot, con);
 		
 		var group : ConnectionList<SlotType>;

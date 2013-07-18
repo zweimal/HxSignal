@@ -1,5 +1,6 @@
 -main Test
 -cp src 
 -cp test 
+-cpp bin/cpp
 -debug
--swf bin/signal.swf
+-D HXCPP_M64
