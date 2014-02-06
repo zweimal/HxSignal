@@ -6,32 +6,32 @@ After some research, coding, testing and effort HxSignal was born!
 
 Basic usage
 -----------
-<pre>
-  // initialisation
-  var voidSignal  = new Signal&lt;Void -> Void>();
-  var eventSignal = new Signal&lt;AnyObject -> String -> Void>();
-  var signal1     = new Signal&lt;Int -> Void>();
-  
-  // connecting, adding or binding slot
-  voidSignal += function() {};
-  
-  // connecting once (disconnected the first time it is called)
-  eventSignal &lt;&lt; function(origin, type) {};
-  
-  // disconnecting slot
-  function slot1(num : Int) : Void { }
-  
-  signal1 -= slot1;
-  
-  // emitting
-  voidSignal.emit();
-  eventSignal.emit(this, "clicked");
-  signal1.emit(123);
-</pre>
+```haxe
+// initialisation
+var voidSignal  = new Signal<Void -> Void>();
+var eventSignal = new Signal<AnyObject -> String -> Void>();
+var signal1     = new Signal<Int -> Void>();
+
+// connecting, adding or binding slot
+voidSignal += function() {};
+
+// connecting once (disconnected the first time it is called)
+eventSignal << function(origin, type) {};
+
+// disconnecting slot
+function slot1(num : Int) : Void { }
+
+signal1 -= slot1;
+
+// emitting
+voidSignal.emit();
+eventSignal.emit(this, "clicked");
+signal1.emit(123);
+```
 
 Advanced usage
 --------------
-<pre>
+```haxe
 // Add slots to groups
 signal1.connect(slot1, 1); // slot1 added to group 1
 signal1.connect(slot1bis, 2); // slot added to group 2
@@ -42,12 +42,12 @@ signal1.disconnectGroup(1);
 // priority
 signal1.connect(slot1, 1, AtBack);
 signal1.connect(slot1bis, 1, AtFront); // slot1bis is called first then slot1
-</pre>
+```
 
 Also
 ----
-- disconnectAll() // disconects all the slots
-- block(slot, true)     // block slot (not called) until block(slot, false) is called
-- isBlock(slot)
-- numSlots  	  // amount of slot connected
+- `disconnectAll()` // disconects all the slots
+- `block(slot, true)`     // block slot (not called) until block(slot, false) is called
+- `isBlock(slot)`
+- `numSlots`  	  // amount of slot connected
 - and more features are coming
