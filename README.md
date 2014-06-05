@@ -7,9 +7,9 @@ Basic usage
 -----------
 ```haxe
 // initialisation
-var voidSignal  = new Signal&lt;Void -> Void>();
-var eventSignal = new Signal&lt;AnyObject -> String -> Void>();
-var signal1     = new Signal&lt;Int -> Void>();
+var voidSignal  = new Signal<Void -> Void>();
+var eventSignal = new Signal<AnyObject -> String -> Void>();
+var signal1     = new Signal<Int -> Void>();
 
 // connecting, adding or binding slot
 voidSignal.connect(function() {});
@@ -59,7 +59,7 @@ function add2(value : Int) : Int {
 	return value + 2;
 }
 
-var signalWithResponse = new Signal&lt;Int->Int>();
+var signalWithResponse = new Signal<Int->Int>();
 signalWithResponse.connect(add1);
 signalWithResponse.connect(add2);
 
@@ -72,7 +72,7 @@ Handling the signal responses
 Let's add a results processor...
 ```haxe
 // responses == [add1(x), add2(x)] where x is the emitted integer
-signalWithResponse.resultsProcessor = function (responses:Array&lt;Int>) {
+signalWithResponse.resultsProcessor = function (responses:Array<Int>) {
 	var result = 0;
 	for (i in responses)
 		result += i;
