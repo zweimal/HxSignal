@@ -26,16 +26,10 @@ package hxsignal.impl;
 **/
 class Signal0 extends SignalBase<Void -> Void>
 {
-	public function new()
-	{
-		super();
-		this.emit = emit0;
-	}
-
 	/**
-		Calls the slots with with no arguements.
+		Calls the slots with no arguments.
 	**/
-	function emit0()
+	public function emit():Void
 	{
 		SignalBase.doEmit();
 	}

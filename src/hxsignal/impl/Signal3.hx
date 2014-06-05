@@ -26,16 +26,10 @@ package hxsignal.impl;
 **/
 class Signal3<T1, T2, T3> extends SignalBase<T1 -> T2 -> T3 -> Void>
 {
-	public function new(?types : Array<Dynamic>, ?resultType : Dynamic)
-	{
-		super(types, resultType);
-		this.emit = emit3;
-	}
-
 	/**
-		Calls the slots with three arguements.
+		Calls the slots with three arguments.
 	**/
-	function emit3(p1 : T1, p2 : T2, p3 : T3)
+	public function emit(p1 : T1, p2 : T2, p3 : T3):Void
 	{
 		SignalBase.doEmit(p1, p2, p3);
 	}

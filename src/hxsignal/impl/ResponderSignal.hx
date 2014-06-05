@@ -20,17 +20,35 @@
  */
 package hxsignal.impl;
 
+#if macro
+import haxe.macro.Expr;
+#end
+
 /**
-	Signal that calls slots with two arguements.
-	@author German Allemand
-**/
-class Signal2<T1, T2> extends SignalBase<T1 -> T2 -> Void>
+ * ...
+ * @author German Allemand
+ */
+class ResponderSignal<SlotType, R> extends SignalBase<SlotType>
 {
-	/**
-		Calls the slots with two arguments.
-	**/
-	public function emit(p1 : T1, p2 : T2):Void
+	public var resultsProcessor:Array<R>->R;
+	
+	macro static function doEmitWithResult(exprs : Array<Expr>) : Expr
 	{
-		SignalBase.doEmit(p1, p2);
+		return macro
+		{ 
+			var result;
+			var all = [];
+			function delegate(con)
+			{
+				result = con.slot($a{exprs});
+				all.push(result);
+			}
+			loop(delegate);
+			
+			if (resultsProcessor != null)
+				result = resultsProcessor(all);
+			
+			return result;
+		}
 	}
 }

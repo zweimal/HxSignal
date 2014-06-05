@@ -33,9 +33,11 @@ class Connection<SlotType>
 	public var slot(default, null) : SlotType;
 	
 	/**
-		Whether this slot is automatically removed after it has been used once.
+		Amount of times slot has to called before autodisconnect it
 	**/
-	public var once(default, default) : Bool;
+	public var times(default, default) : ConnectionTimes;
+	
+	public var calledTimes(default, default) : Int;
 	
 	/**
 		Whether the slot is called on signal emition. Defaults to false.
@@ -46,14 +48,14 @@ class Connection<SlotType>
 	
 	public var groupId (default, default) : Int;
 	
-	var signal : ISignal<SlotType>;
+	var signal : SignalBase<SlotType>;
 
-	public function new(signal : ISignal<SlotType>, slot : SlotType, once : Bool=false) 
+	public function new(signal : SignalBase<SlotType>, slot : SlotType, times : ConnectionTimes) 
 	{
 		this.signal = signal;
 		if (slot == null) throw "Slot cannot be null";
 		this.slot = slot;
-		this.once = once;
+		this.times = times;
 		this.blocked = false;
 		this.connected = true;
 	}

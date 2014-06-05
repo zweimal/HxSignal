@@ -21,16 +21,16 @@
 package hxsignal.impl;
 
 /**
-	Signal that calls slots with two arguements.
+	Signal that calls slots with one arguement.
 	@author German Allemand
 **/
-class Signal2<T1, T2> extends SignalBase<T1 -> T2 -> Void>
+class ResponderSignal1<T1, R> extends ResponderSignal<T1 -> R, R>
 {
 	/**
-		Calls the slots with two arguments.
+		Calls the slots with one argument.
 	**/
-	public function emit(p1 : T1, p2 : T2):Void
+	public function emit(p1 : T1):R
 	{
-		SignalBase.doEmit(p1, p2);
+		ResponderSignal.doEmitWithResult(p1);
 	}
 }

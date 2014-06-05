@@ -30,10 +30,10 @@ import hxsignal.impl.Signal3;
  * ...
  * @author German Allemand
  */
-@:multiType
-abstract Signal<SlotType>(ISignal<SlotType>)
+@:genericBuild(hxsignal.macro.SignalMacro.build())
+class Signal<SlotType>
 {
-	public function new();
+	public function new() {};
 	
 	/**
 		Connects an slot to the signal.
@@ -41,65 +41,34 @@ abstract Signal<SlotType>(ISignal<SlotType>)
 		@param slot A function matching the signature of SlotType
 		@param once Removes slot automatically after it is called
 	**/
-	public inline function connect(slot : SlotType, ?once : Bool = false, ?groupId : Int = null, ?at : ConnectPosition = null) return this.connect(slot, once, groupId, at);
+	public function connect(slot : SlotType, ?times : ConnectionTimes, ?groupId : Int = null, ?at : ConnectPosition = null) : Void {}
 	
-	public inline function isConnected(slot : SlotType) return this.isConnected(slot);
+	public function isConnected(slot : SlotType) : Bool return false;
 	
-	public inline function block(slot : SlotType, flag : Bool) this.block(slot, flag);
+	public function block(slot : SlotType, flag : Bool) : Void {}
 	
-	public inline function isBlocked(slot : SlotType) return this.isBlocked(slot);
+	public function isBlocked(slot : SlotType) : Bool return false;
 	
-	public inline function disconnect(slot : SlotType) return this.disconnect(slot);
+	public function disconnect(slot : SlotType) : Bool return false;
 	
-	public inline function disconnectAll() this.disconnectAll();
+	public function disconnectAll() {};
 	
-	public inline function disconnectGroup(id : Int) return this.disconnectGroup(id);
+	public function disconnectGroup(id : Int) : Bool return false;
 		
-	public var emit(get, never) : SlotType;
-	
-	private inline function get_emit() return this.emit;
-	
+
 	/**
 		The current number of slots connected to the signal.
 	**/
-	public var numSlots(get, never) : Int;
-	
-	private inline function get_numSlots() return this.numSlots;
-	
-	@:op(A += B) inline public static function addSlot<SlotType>(signal : Signal<SlotType>, slot : SlotType) signal.connect(slot, false, null, null);
-	
-	@:op(A -= B) inline public static function removeSlot<SlotType>(signal : Signal<SlotType>, slot : SlotType) signal.disconnect(slot);
-	
-	@:op(A << B) inline public static function addOnceSlot<SlotType>(signal : Signal<SlotType>, slot : SlotType) signal.connect(slot, true, null, null);
-	
-	@:to static inline function toSignal0(signal : ISignal<Void -> Void>) : Signal0 {
-		return new Signal0();
-	}
-	
-	@:to static inline function toSignal1<T1>(signal : ISignal<T1 -> Void>) : Signal1<T1> {
-		return new Signal1();
-	}
-	
-	@:to static inline function toSignal2<T1, T2>(signal : ISignal<T1 -> T2 -> Void>) : Signal2<T1, T2> {
-		return new Signal2();
-	}
-	
-	@:to static inline function toSignal3<T1, T2, T3>(signal : ISignal<T1 -> T2 -> T3 -> Void>) : Signal3<T1, T2, T3> {
-		return new Signal3();
-	}
+	public var numSlots(default, never) : Int;
+
+
 }
 
-interface ISignal<SlotType> 
-{
-	var emit : SlotType;
-	var numSlots (get, never) : Int;
-	function connect(slot : SlotType, ?once : Bool = false, ?groupId : Int = null, ?at : ConnectPosition = null) : Void;
-	function isConnected(slot : SlotType) : Bool;
-	function block(slot : SlotType, flag : Bool) : Void;
-	function isBlocked(slot : SlotType) : Bool;
-	function disconnect(slot : SlotType) : Bool;
-	function disconnectAll() : Void;
-	function disconnectGroup(id : Int) : Bool;
+enum ConnectionTimes 
+{ 
+	Once; 
+	Times(t:Int);
+	Forever;
 }
 
 enum ConnectPosition 

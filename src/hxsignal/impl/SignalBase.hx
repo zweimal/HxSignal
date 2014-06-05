@@ -34,10 +34,8 @@ using Lambda;
  * ...
  * @author German Allemand
  */
-class SignalBase<SlotType> implements ISignal<SlotType>
+class SignalBase<SlotType>
 {
-	var types : Array<Dynamic>;
-	var resultType : Dynamic;
 	var emitting : Bool;
 	
 	/**
@@ -49,27 +47,25 @@ class SignalBase<SlotType> implements ISignal<SlotType>
 	
 	var slots : SlotMap<SlotType>;
 	
-	public function new(?types : Array<Dynamic>, ?resultType : Dynamic) 
+	public function new() 
 	{
-		this.types = if (types!=null) types else [];
-		this.resultType = resultType;
-		
 		slots = new SlotMap();
 	}
 
-	public var emit : SlotType;
-	
-	public function connect(slot : SlotType, ?once : Bool = false, ?groupId : Int = null, ?at : ConnectPosition = null) : Void
+	public function connect(slot : SlotType, ?times : ConnectionTimes, ?groupId : Int = null, ?at : ConnectPosition = null) : Void
 	{
-		if (!updateConnection(slot, once))
+		if (times == null) {
+			times = Forever;
+		}
+		if (!updateConnection(slot, times))
 		{
-			var conn = new Connection(this, slot, once);
+			var conn = new Connection(this, slot, times);
 			
 			slots.insert(conn, groupId, at);
 		}
 	}
 	
-	function updateConnection(slot : SlotType, once : Bool, ?groupId : Int, ?at : ConnectPosition) : Bool
+	function updateConnection(slot : SlotType, times : ConnectionTimes, ?groupId : Int, ?at : ConnectPosition) : Bool
 	{
 		var con = slots.get(slot);
 		
@@ -82,7 +78,8 @@ class SignalBase<SlotType> implements ISignal<SlotType>
 			return false;
 		}
 		
-		con.once = once;
+		con.times = times;
+		con.calledTimes = 0;
 		con.connected = true;
 		
 		return true;
@@ -95,23 +92,46 @@ class SignalBase<SlotType> implements ISignal<SlotType>
 	
 	macro static function doEmit(exprs : Array<Expr>) : Expr
 	{
-		return macro { 
-			emitting = true;
-			for (g in slots.groups) 
+		return macro
+		{ 
+			function delegate(con)
 			{
-				for (con in g) 
+				con.slot($a{exprs});
+			}
+			loop(delegate);
+		}
+	}
+		
+	function loop(delegate:Connection<SlotType>->Void):Void
+	{
+		emitting = true;
+		for (g in slots.groups) 
+		{
+			for (con in g) 
+			{
+				if (con.connected && !con.blocked)
 				{
-					if (con.connected && !con.blocked)
-					{
-						con.slot($a{exprs});
+					con.calledTimes++;
+					delegate(con);
+					
+					if (!con.connected)
+						slots.disconnect(con.slot);
 						
-						if (!con.connected || con.once)
-							slots.disconnect(con.slot);
+					if (con.times == Once)
+						con.times = Times(1);
+						
+					switch (con.times)
+					{
+						case Times(t):
+							if (t <= con.calledTimes)
+								slots.disconnect(con.slot);
+						
+						case _:
 					}
 				}
 			}
-			emitting = false;
 		}
+		emitting = false;
 	}
 	
 	public function block(slot : SlotType, flag : Bool) : Void
