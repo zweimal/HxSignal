@@ -1,6 +1,7 @@
 package ;
 
 import haxe.unit.TestCase;
+import hxsignal.Signal;
 
 /**
  * ...
@@ -9,7 +10,7 @@ import haxe.unit.TestCase;
 class SignalTest extends TestCase
 {
 	var emitter : Emitter;
-	
+
 	public function new() 
 	{
 		super();
@@ -28,22 +29,39 @@ class SignalTest extends TestCase
 	public function testSlot0()
 	{
 		emitter.signal0.connect(slot0_1, Once);
-		assertTrue(emitter.signal0.numSlots == 1);
+		assertEquals(emitter.signal0.numSlots, 1);
 		
 		emitter.signal0.connect(slot0_1);
-		assertTrue(emitter.signal0.numSlots == 1);
+		assertEquals(emitter.signal0.numSlots, 1);
 		
 		emitter.signal0.connect(slot0_2, Once);
-		assertTrue(emitter.signal0.numSlots == 2);
+		assertEquals(emitter.signal0.numSlots, 2);
 		
 		emitter.signal0.connect(slot0_3); 
-		assertTrue(emitter.signal0.numSlots == 3);
+		assertEquals(emitter.signal0.numSlots, 3);
 		
 		emitter.action0();
-		assertTrue(emitter.signal0.numSlots == 1);
+		assertEquals(emitter.signal0.numSlots, 1);
 		
 		emitter.signal0.disconnect(slot0_1);
-		assertTrue(emitter.signal0.numSlots == 0);
+		assertEquals(emitter.signal0.numSlots, 0);
+	}
+	
+	public function testSlotBind()
+	{
+		emitter.signal0.connect(slot1_1.bind("John"), Once);
+		assertEquals(emitter.signal0.numSlots, 1);
+		
+		emitter.action0();
+		emitter.action0();
+		assertEquals(emitter.signal0.numSlots, 0);
+		
+		var counter = 0;
+		emitter.signal0.connect(function() ++counter, Once);
+		
+		emitter.action0();
+		emitter.action0();
+		assertEquals(counter, 1);
 	}
 	
 	public function testSlot1()
@@ -71,7 +89,7 @@ class SignalTest extends TestCase
 		var result = emitter.action0r();
 		assertEquals(result, 3);
 	}
-	
+
 	function processResults(arr:Array<Int>):Int
 	{
 		var result = 0;
@@ -113,7 +131,7 @@ class SignalTest extends TestCase
 	
 	function slot1_1(name : String) : Void
 	{
-		trace("hello 1_1");
+		trace('hello $name 1_1');
 	}
 	
 	function slot1_unmatched(name : String, p2 : String) : Void
@@ -123,7 +141,7 @@ class SignalTest extends TestCase
 	
 	function slot2(origin : Emitter, num : Int) : Void
 	{
-		assertTrue(num == 2);
+		assertEquals(num, 2);
 	}
 	
 	

@@ -56,7 +56,8 @@ class Connection<SlotType>
 		if (slot == null) throw "Slot cannot be null";
 		this.slot = slot;
 		this.times = times;
-		this.blocked = false;
-		this.connected = true;
+		blocked = false;
+		connected = true;
+		calledTimes = 0;
 	}
 }
