@@ -1,0 +1,4 @@
+-main Test
+-cp src
+-cp test
+-neko bin/signal.n
