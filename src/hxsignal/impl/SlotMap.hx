@@ -32,13 +32,13 @@ import hxsignal.Signal;
  */
 class SlotMap<SlotType>
 {
-	public var length (get, never) : Int;
-	public var groups : TreeMap < Int, ConnectionList<SlotType> > ;
-	#if cpp	
-	var slots : TreeMap<SlotType, Connection<SlotType>>;
+	public var length(get, never) : Int;
 
+	public var groups(default, null) : TreeMap<Int, ConnectionList<SlotType>>;
+	#if cpp
+	var slots = new TreeMap<SlotType, Connection<SlotType>>();
 	#else
-	var slots : ObjectMap<Dynamic, Connection<SlotType>>;
+	var slots = new ObjectMap<Dynamic, Connection<SlotType>>();
 	#end
 
 	public function new()
@@ -48,11 +48,6 @@ class SlotMap<SlotType>
 
 	public function clear() : Void
 	{
-		#if cpp
-		slots = new TreeMap();
-		#else
-		slots = new ObjectMap();
-		#end
 		groups = new TreeMap();
 		groups.set(0, new LinkedList());
 	}
