@@ -1,4 +1,4 @@
 -main Test
--cp src 
--cp test 
+-cp src
+-cp test
 -swf bin/swf/signal.swf
