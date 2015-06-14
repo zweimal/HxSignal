@@ -24,7 +24,7 @@ package hxsignal.impl;
 	Signal that calls slots with three arguements.
 	@author German Allemand
 **/
-class ResponderSignal3<T1, T2, T3, R> extends ResponderSignal<T1 -> T2 -> T3 -> R>
+class ResponderSignal3<T1, T2, T3, R> extends ResponderSignal<T1 -> T2 -> T3 -> R, R>
 {
 	/**
 		Calls the slots with three arguments.
