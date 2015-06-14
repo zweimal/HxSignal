@@ -36,7 +36,7 @@ class SlotMap<SlotType>
 
 	public var groups(default, null) : TreeMap<Int, ConnectionList<SlotType>>;
 	#if cpp
-	var slots = new TreeMap<SlotType, Connection<SlotType>>();
+	var slots = new TreeMap<Slot<SlotType>, Connection<SlotType>>();
 	#else
 	var slots = new ObjectMap<Dynamic, Connection<SlotType>>();
 	#end
@@ -93,17 +93,17 @@ class SlotMap<SlotType>
 		}
 	}
 
-	public function get(slot : SlotType) : Connection<SlotType>
+	public function get(slot : Slot<SlotType>) : Connection<SlotType>
 	{
 		return slots.get(slot);
 	}
 
-	public function has(slot : SlotType) : Bool
+	public function has(slot : Slot<SlotType>) : Bool
 	{
 		return slots.get(slot) != null;
 	}
 
-	public function disconnect(slot : SlotType) : Bool
+	public function disconnect(slot : Slot<SlotType>) : Bool
 	{
 		var con = slots.get(slot);
 		if (con == null)
