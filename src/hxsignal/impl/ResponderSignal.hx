@@ -36,14 +36,11 @@ class ResponderSignal<SlotType, R> extends SignalBase<SlotType>
 	{
 		return macro
 		{
-			var result;
+			var result = null;
 			var all = [];
-			function delegate(con)
-			{
-				result = con.slot($a{exprs});
-				all.push(result);
-			}
-			loop(delegate);
+			inline function processResult(result) all.push(result);
+
+			SignalBase.doEmit($a{exprs});
 
 			if (resultsProcessor != null)
 				result = resultsProcessor(all);
