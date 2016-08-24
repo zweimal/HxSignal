@@ -2,10 +2,10 @@
   "name": "hxsignal",
   "url" : "https://github.com/zweimal/HxSignal",
   "license": "LGPL",
-  "tags": ["cpp", "neko", "flash", "js"],
+  "tags": ["cpp", "neko", "flash", "js", "java"],
   "description": "Simple Haxe Signal API implementation",
-  "version": "0.9.1",
-  "releasenote": "First big release",
+  "version": "0.9.2",
+  "releasenote": "Fixed Haxe 3.3.0-rc.1 issues",
   "contributors": ["zweimal"],
   "dependencies": {  }
 }
