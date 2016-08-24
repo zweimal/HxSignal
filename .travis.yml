@@ -4,4 +4,4 @@ haxe:
   - "3.3.0-rc1"
   - development
 hxml:
-  - build.hxml
+  - js-test.hxml
