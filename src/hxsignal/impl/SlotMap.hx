@@ -21,8 +21,6 @@
 package hxsignal.impl;
 
 import haxe.ds.ObjectMap;
-import hxsignal.ds.ExtendedIterator;
-import hxsignal.ds.LinkedList;
 import hxsignal.ds.TreeMap;
 import hxsignal.Signal;
 
@@ -49,7 +47,7 @@ class SlotMap<SlotType>
 	public function clear() : Void
 	{
 		groups = new TreeMap();
-		groups.set(0, new LinkedList());
+		groups.set(0, new List());
 	}
 
 	public function insert(con : Connection<SlotType>, ?groupId : Int, ?at : ConnectPosition) : Void
@@ -78,7 +76,7 @@ class SlotMap<SlotType>
 			group = groups.get(groupId);
 			if (group == null)
 			{
-				group = new LinkedList();
+				group = new List();
 				groups.set(groupId, group);
 			}
 		}
@@ -144,5 +142,5 @@ class SlotMap<SlotType>
 	}
 }
 
-typedef ConnectionList<SlotType> = LinkedList<Connection<SlotType>>;
+typedef ConnectionList<SlotType> = List<Connection<SlotType>>;
 

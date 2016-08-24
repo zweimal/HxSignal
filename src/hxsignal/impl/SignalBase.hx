@@ -25,7 +25,6 @@ import haxe.macro.Expr;
 #end
 
 import hxsignal.impl.SlotMap;
-import hxsignal.ds.LinkedList;
 import hxsignal.Signal;
 
 using Lambda;
