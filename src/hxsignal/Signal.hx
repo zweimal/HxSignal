@@ -30,7 +30,7 @@ import hxsignal.impl.Signal3;
  * ...
  * @author German Allemand
  */
-@:genericBuild(hxsignal.macro.SignalMacro.build())
+#if !macro @:genericBuild(hxsignal.macro.SignalMacro.build()) #end
 class Signal<SlotType>
 {
 	public function new() {};
