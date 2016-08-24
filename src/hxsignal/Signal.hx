@@ -20,12 +20,6 @@
  */
  package hxsignal;
 
-import hxsignal.impl.Connection;
-import hxsignal.impl.Signal0;
-import hxsignal.impl.Signal1;
-import hxsignal.impl.Signal2;
-import hxsignal.impl.Signal3;
-
 /**
  * ...
  * @author German Allemand
