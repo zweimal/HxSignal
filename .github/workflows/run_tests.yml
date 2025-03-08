@@ -1,0 +1,43 @@
+name: Run tests on master 
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  run-tests:
+    uses: vegardit/haxe-reusable-workflows/.github/workflows/test-with-haxe.yml@v1
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-latest
+        haxe:
+        - 3.2.1
+        - 3.3.0-rc.1
+        - 4.3.6
+    
+    with:
+      runner-os: ${{ matrix.os }}
+      haxe-version: ${{ matrix.haxe }}
+      haxe-libs: hx3compat
+
+      output-dir: bin
+      test-cpp:    true
+      test-cs:     true
+      # test-eval:   true
+      test-hl:     true
+      test-java:   true
+      # test-jvm:    true
+      # test-lua:    true
+      test-neko:   true
+      test-node:   true
+      test-php:    true
+      test-python: true
+
+      steps:
+      - name: Build the site in the jekyll/builder container
+      - uses: actions/checkout@v4
+

@@ -1,0 +1,4 @@
+tests.hxml
+
+-D js-es=6
+-js bin/js/signal.js

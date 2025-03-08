@@ -1,0 +1,5 @@
+tests.hxml
+
+-D HXCPP_M64
+-cpp bin/cpp
+

@@ -1,0 +1,4 @@
+tests.hxml
+
+-java bin/java
+

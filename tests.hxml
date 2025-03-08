@@ -1,5 +1,6 @@
 -main Test
 -cp src 
--cp test 
--java bin/java
+-cp tests
 -debug
+-lib hx3compat 
+

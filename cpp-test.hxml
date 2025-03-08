@@ -1,6 +1,0 @@
--main Test
--cp src
--cp test
--cpp bin/cpp
--debug
--D HXCPP_M64
