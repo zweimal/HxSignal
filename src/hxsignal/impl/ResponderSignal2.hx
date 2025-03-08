@@ -18,19 +18,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.impl;
 
 /**
-	Signal that calls slots with two arguements.
-	@author German Allemand
+  Signal that calls slots with two arguements.
+  @author German Allemand
 **/
-class ResponderSignal2<T1, T2, R> extends ResponderSignal<T1 -> T2 -> R, R>
-{
-	/**
-		Calls the slots with two arguments.
-	**/
-	public function emit(p1 : T1, p2 : T2):R
-	{
-		ResponderSignal.doEmitWithResult(p1, p2);
-	}
+class ResponderSignal2<T1, T2, R> extends ResponderSignal<T1 -> T2 -> R, R> {
+  /**
+    Calls the slots with two arguments.
+  **/
+  public function emit(p1: T1, p2: T2): R {
+    ResponderSignal.doEmitWithResult(p1, p2);
+  }
 }

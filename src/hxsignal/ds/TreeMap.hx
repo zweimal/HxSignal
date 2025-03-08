@@ -18,52 +18,45 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.ds;
 
 import haxe.ds.BalancedTree;
 
-class TreeMap<K, V> extends BalancedTree<K, V>
-{
-	public function firstKey() : Null<K>
-	{
-		var first = getFirstNode();
-		return if (first != null) first.key else null;
-	}
+class TreeMap<K, V> extends BalancedTree<K, V> {
+  public function firstKey(): Null<K> {
+    var first = getFirstNode();
+    return if (first != null) first.key else null;
+  }
 
-	public function lastKey() : Null<K>
-	{
-		var last = getLastNode();
-		return if (last != null) last.key else null;
-	}
+  public function lastKey(): Null<K> {
+    var last = getLastNode();
+    return if (last != null) last.key else null;
+  }
 
+  public function firstValue(): Null<V> {
+    var first = getFirstNode();
+    return if (first != null) first.value else null;
+  }
 
-	public function firstValue() : Null<V>
-	{
-		var first = getFirstNode();
-		return if (first != null) first.value else null;
-	}
+  public function lastValue(): Null<V> {
+    var last = getLastNode();
+    return if (last != null) last.value else null;
+  }
 
-	public function lastValue() : Null<V>
-	{
-		var last = getLastNode();
-		return if (last != null) last.value else null;
-	}
+  function getFirstNode(): TreeNode<K, V> {
+    var n = root;
+    if (n != null)
+      while (n.left != null)
+        n = n.left;
+    return n;
+  }
 
-	function getFirstNode() : TreeNode<K,V>
-	{
-		var n = root;
-		if (n != null)
-			while (n.left != null)
-				n = n.left;
-		return n;
-	}
-
-	function getLastNode() : TreeNode<K,V>
-	{
-		var n = root;
-		if (n != null)
-			while (n.right != null)
-				n = n.right;
-		return n;
-	}
+  function getLastNode(): TreeNode<K, V> {
+    var n = root;
+    if (n != null)
+      while (n.right != null)
+        n = n.right;
+    return n;
+  }
 }

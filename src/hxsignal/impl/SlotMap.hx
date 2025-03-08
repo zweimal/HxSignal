@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.impl;
 
 import haxe.ds.ObjectMap;
@@ -28,119 +29,104 @@ import hxsignal.Signal;
  * ...
  * @author German Allemand
  */
-class SlotMap<SlotType>
-{
-	public var length(get, never) : Int;
+class SlotMap<SlotType> {
+  public var length(get, never): Int;
 
-	public var groups(default, null) : TreeMap<Int, ConnectionList<SlotType>>;
-	#if cpp
-	var slots = new TreeMap<Slot<SlotType>, Connection<SlotType>>();
-	#else
-	var slots = new ObjectMap<Dynamic, Connection<SlotType>>();
-	#end
+  public var groups(default, null): TreeMap<Int, ConnectionList<SlotType>>;
 
-	public function new()
-	{
-		clear();
-	}
+  #if cpp
+  var slots = new TreeMap<Slot<SlotType>, Connection<SlotType>>();
+  #else
+  var slots = new ObjectMap<Dynamic, Connection<SlotType>>();
+  #end
 
-	public function clear() : Void
-	{
-		groups = new TreeMap();
-		groups.set(0, new List());
-	}
+  public function new() {
+    clear();
+  }
 
-	public function insert(con : Connection<SlotType>, ?groupId : Int, ?at : ConnectPosition) : Void
-	{
-		if (at == null)
-			at = AtBack;
+  public function clear(): Void {
+    groups = new TreeMap();
+    groups.set(0, new List());
+  }
 
-		slots.set(con.slot, con);
+  public function insert(con: Connection<SlotType>, ?groupId: Int, ?at: ConnectPosition): Void {
+    if (at == null)
+      at = AtBack;
 
-		var group : ConnectionList<SlotType>;
-		if (groupId == null)
-		{
-			switch (at)
-			{
-				case AtFront:
-					groupId = groups.firstKey();
-					group = groups.firstValue();
+    slots.set(con.slot, con);
 
-				default:
-					groupId = groups.lastKey();
-					group = groups.lastValue();
-			}
-		}
-		else
-		{
-			group = groups.get(groupId);
-			if (group == null)
-			{
-				group = new List();
-				groups.set(groupId, group);
-			}
-		}
+    var group: ConnectionList<SlotType>;
+    if (groupId == null) {
+      switch (at) {
+        case AtFront:
+          groupId = groups.firstKey();
+          group = groups.firstValue();
 
-		con.groupId = groupId;
+        default:
+          groupId = groups.lastKey();
+          group = groups.lastValue();
+      }
+    } else {
+      group = groups.get(groupId);
+      if (group == null) {
+        group = new List();
+        groups.set(groupId, group);
+      }
+    }
 
-		switch (at)
-		{
-			case AtFront: group.push(con);
+    con.groupId = groupId;
 
-			default: group.add(con);
-		}
-	}
+    switch (at) {
+      case AtFront:
+        group.push(con);
 
-	public function get(slot : Slot<SlotType>) : Connection<SlotType>
-	{
-		return slots.get(slot);
-	}
+      default:
+        group.add(con);
+    }
+  }
 
-	public function has(slot : Slot<SlotType>) : Bool
-	{
-		return slots.get(slot) != null;
-	}
+  public function get(slot: Slot<SlotType>): Connection<SlotType> {
+    return slots.get(slot);
+  }
 
-	public function disconnect(slot : Slot<SlotType>) : Bool
-	{
-		var con = slots.get(slot);
-		if (con == null)
-			return false;
+  public function has(slot: Slot<SlotType>): Bool {
+    return slots.get(slot) != null;
+  }
 
-		slots.remove(slot);
-		con.connected = false;
+  public function disconnect(slot: Slot<SlotType>): Bool {
+    var con = slots.get(slot);
+    if (con == null)
+      return false;
 
-		return true;
-	}
+    slots.remove(slot);
+    con.connected = false;
 
-	public function disconnectGroup(groupId : Int) : Bool
-	{
-		var group = groups.get(groupId);
-		if (group == null)
-			return false;
+    return true;
+  }
 
-		groups.remove(groupId);
+  public function disconnectGroup(groupId: Int): Bool {
+    var group = groups.get(groupId);
+    if (group == null)
+      return false;
 
-		for (con in group)
-		{
-			slots.remove(con.slot);
-			con.connected = false;
-		}
+    groups.remove(groupId);
 
-		return true;
-	}
+    for (con in group) {
+      slots.remove(con.slot);
+      con.connected = false;
+    }
 
-	public function disconnectAll() : Void
-	{
-		for (g in groups.keys())
-			disconnectGroup(g);
-	}
+    return true;
+  }
 
-	function get_length() : Int
-	{
-		return Lambda.count(slots);
-	}
+  public function disconnectAll(): Void {
+    for (g in groups.keys())
+      disconnectGroup(g);
+  }
+
+  function get_length(): Int {
+    return Lambda.count(slots);
+  }
 }
 
 typedef ConnectionList<SlotType> = List<Connection<SlotType>>;
-

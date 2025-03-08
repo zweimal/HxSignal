@@ -1,0 +1,13 @@
+{
+    "indentation": {
+        "character": "  ",
+        "tabWidth": 2
+    },
+    "whitespace": {
+        "objectFieldColonPolicy": "after",
+        "typeHintColonPolicy": "after",
+        "arrowFunctionsPolicy": "around",
+        "functionTypeHaxe3Policy": "around",
+        "functionTypeHaxe4Policy": "around"
+    }
+}

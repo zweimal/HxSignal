@@ -18,19 +18,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.impl;
 
 /**
-	Signal that calls slots with no arguments.
-	@author German Allemand
+  Signal that calls slots with no arguments.
+  @author German Allemand
 **/
-class ResponderSignal0<R> extends ResponderSignal<Void -> R, R>
-{
-	/**
-		Calls the slots with no arguments.
-	**/
-	public function emit():R
-	{
-		ResponderSignal.doEmitWithResult();
-	}
+class ResponderSignal0<R> extends ResponderSignal<Void -> R, R> {
+  /**
+    Calls the slots with no arguments.
+  **/
+  public function emit(): R {
+    ResponderSignal.doEmitWithResult();
+  }
 }

@@ -18,19 +18,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.impl;
 
 /**
-	Signal that calls slots with one arguement.
-	@author German Allemand
+  Signal that calls slots with one arguement.
+  @author German Allemand
 **/
-class Signal1<T1> extends SignalBase<T1 -> Void>
-{
-	/**
-		Calls the slots with one argument.
-	**/
-	public function emit(p1 : T1):Void
-	{
-		SignalBase.doEmit(p1);
-	}
+class Signal1<T1> extends SignalBase<T1 -> Void> {
+  /**
+    Calls the slots with one argument.
+  **/
+  public function emit(p1: T1): Void {
+    SignalBase.doEmit(p1);
+  }
 }

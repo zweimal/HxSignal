@@ -18,19 +18,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.impl;
 
 /**
-	Signal that calls slots with three arguements.
-	@author German Allemand
+  Signal that calls slots with three arguements.
+  @author German Allemand
 **/
-class Signal3<T1, T2, T3> extends SignalBase<T1 -> T2 -> T3 -> Void>
-{
-	/**
-		Calls the slots with three arguments.
-	**/
-	public function emit(p1 : T1, p2 : T2, p3 : T3):Void
-	{
-		SignalBase.doEmit(p1, p2, p3);
-	}
+class Signal3<T1, T2, T3> extends SignalBase<T1 -> T2 -> T3 -> Void> {
+  /**
+    Calls the slots with three arguments.
+  **/
+  public function emit(p1: T1, p2: T2, p3: T3): Void {
+    SignalBase.doEmit(p1, p2, p3);
+  }
 }

@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; If not, see <http://www.gnu.org/licenses/>.
  */
+
 package hxsignal.impl;
 
 #if macro
@@ -28,24 +29,22 @@ import haxe.macro.Expr;
  * ...
  * @author German Allemand
  */
-class ResponderSignal<SlotType, R> extends SignalBase<SlotType>
-{
-	public var resultsProcessor:Array<R>->R;
+class ResponderSignal<SlotType, R> extends SignalBase<SlotType> {
+  public var resultsProcessor: Array<R> -> R;
 
-	macro static function doEmitWithResult(exprs : Array<Expr>) : Expr
-	{
-		return macro
-		{
-			var result = null;
-			var all = [];
-			inline function processResult(result) all.push(result);
+  macro static function doEmitWithResult(exprs: Array<Expr>): Expr {
+    return macro {
+      var result = null;
+      var all = [];
+      inline function processResult(result)
+        all.push(result);
 
-			SignalBase.doEmit($a{exprs});
+      SignalBase.doEmit($a{exprs});
 
-			if (resultsProcessor != null)
-				result = resultsProcessor(all);
+      if (resultsProcessor != null)
+        result = resultsProcessor(all);
 
-			return result;
-		}
-	}
+      return result;
+    }
+  }
 }
