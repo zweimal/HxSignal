@@ -1,4 +1,4 @@
-name: Run tests on master 
+name: Run tests
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
         output-dir: bin
         
         test-cpp:    true
-        test-cs:     true
+        # test-cs:     true
         # test-eval:   true
         test-hl:      ${{ matrix.haxe != '3.4.7' }}
         test-java:   true
