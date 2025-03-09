@@ -9,9 +9,10 @@ using haxe.macro.Tools;
 
 /**
  * ...
- *  @author German Allemand
+ * @author German Allemand
  */
 class SignalMacro {
+  #if macro
   public static function build(): Type {
     var type = Context.getLocalType();
     switch (type) {
@@ -48,4 +49,5 @@ class SignalMacro {
 
     return TPath({pack: ["hxsignal", "impl"], name: className, params: params}).toType();
   }
+  #end
 }

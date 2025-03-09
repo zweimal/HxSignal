@@ -21,9 +21,6 @@
 
 package hxsignal.impl;
 
-#if macro
-import haxe.macro.Expr;
-#end
 import hxsignal.impl.SlotMap;
 import hxsignal.Signal;
 
@@ -33,7 +30,7 @@ using Lambda;
  * ...
  * @author German Allemand
  */
-class SignalBase<SlotType> {
+abstract class SignalBase<SlotType> {
   var emitting: Bool;
 
   /**
@@ -83,54 +80,32 @@ class SignalBase<SlotType> {
     return slots.has(slot);
   }
 
-  macro static function doEmit(exprs: Array<Expr>): Expr {
-    var invokeSlotExpr: Expr;
-    if (isResponderSignal()) {
-      invokeSlotExpr = macro processResult(con.slot($a{exprs}));
-    } else {
-      invokeSlotExpr = macro con.slot($a{exprs});
-    }
+  inline function doEmit(slotCaller: Slot<SlotType> -> Void): Void {
+    emitting = true;
+    for (g in slots.groups) {
+      for (con in g) {
+        if (con.connected && !con.blocked) {
+          con.calledTimes++;
+          slotCaller(con.slot);
 
-    return macro {
-      emitting = true;
-      for (g in slots.groups) {
-        for (con in g) {
-          if (con.connected && !con.blocked) {
-            con.calledTimes++;
-            $invokeSlotExpr;
+          if (!con.connected)
+            slots.disconnect(con.slot);
 
-            if (!con.connected)
-              slots.disconnect(con.slot);
+          if (con.times == Once)
+            con.times = Times(1);
 
-            if (con.times == Once)
-              con.times = Times(1);
+          switch (con.times) {
+            case Times(t):
+              if (t <= con.calledTimes)
+                slots.disconnect(con.slot);
 
-            switch (con.times) {
-              case Times(t):
-                if (t <= con.calledTimes) slots.disconnect(con.slot);
-
-              case _:
-            }
+            case _:
           }
         }
       }
-      emitting = false;
     }
+    emitting = false;
   }
-
-  #if macro
-  static function isResponderSignal(): Bool {
-    var type = haxe.macro.Context.getLocalType();
-
-    switch (type) {
-      case TInst(classType, _):
-        return classType.get().name.indexOf("Responder") == 0;
-      case _:
-    }
-
-    return false;
-  }
-  #end
 
   public function block(slot: SlotType, flag: Bool): Void {
     var con = slots.get(slot);

@@ -29,22 +29,18 @@ import haxe.macro.Expr;
  * ...
  * @author German Allemand
  */
-class ResponderSignal<SlotType, R> extends SignalBase<SlotType> {
+abstract class ResponderSignal<SlotType, R> extends SignalBase<SlotType> {
   public var resultsProcessor: Array<R> -> R;
 
-  macro static function doEmitWithResult(exprs: Array<Expr>): Expr {
-    return macro {
-      var result = null;
-      var all = [];
-      inline function processResult(result)
-        all.push(result);
+  function doEmitWithResult(slotCaller: Slot<SlotType> -> R): R {
+    var result = null;
+    var all = [];
 
-      SignalBase.doEmit($a{exprs});
+    this.doEmit(slot -> all.push(slotCaller(slot)));
 
-      if (resultsProcessor != null)
-        result = resultsProcessor(all);
+    if (resultsProcessor != null)
+      result = resultsProcessor(all);
 
-      return result;
-    }
+    return result;
   }
 }

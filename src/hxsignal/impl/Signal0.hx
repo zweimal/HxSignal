@@ -30,6 +30,6 @@ class Signal0 extends SignalBase<Void -> Void> {
     Calls the slots with no arguments.
   **/
   public function emit(): Void {
-    SignalBase.doEmit();
+    this.doEmit(slot -> slot());
   }
 }

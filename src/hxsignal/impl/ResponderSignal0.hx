@@ -30,6 +30,6 @@ class ResponderSignal0<R> extends ResponderSignal<Void -> R, R> {
     Calls the slots with no arguments.
   **/
   public function emit(): R {
-    ResponderSignal.doEmitWithResult();
+    return this.doEmitWithResult(slot -> slot());
   }
 }

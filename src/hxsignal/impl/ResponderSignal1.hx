@@ -30,6 +30,6 @@ class ResponderSignal1<T1, R> extends ResponderSignal<T1 -> R, R> {
     Calls the slots with one argument.
   **/
   public function emit(p1: T1): R {
-    ResponderSignal.doEmitWithResult(p1);
+    return this.doEmitWithResult(slot -> slot(p1));
   }
 }
