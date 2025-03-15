@@ -21,7 +21,7 @@
 
 package hxsignal.impl;
 
-import haxe.ds.ObjectMap;
+import haxe.Constraints.Function;
 import hxsignal.ds.TreeMap;
 import hxsignal.Signal;
 
@@ -29,16 +29,10 @@ import hxsignal.Signal;
  * ...
  * @author German Allemand
  */
-class SlotMap<SlotType> {
+class SlotMap<SlotType:Function> {
   public var length(get, never): Int;
 
   public var groups(default, null): TreeMap<Int, ConnectionList<SlotType>>;
-
-  #if cpp
-  var slots = new TreeMap<Slot<SlotType>, Connection<SlotType>>();
-  #else
-  var slots = new ObjectMap<Dynamic, Connection<SlotType>>();
-  #end
 
   public function new() {
     clear();
@@ -52,8 +46,6 @@ class SlotMap<SlotType> {
   public function insert(con: Connection<SlotType>, ?groupId: Int, ?at: ConnectPosition): Void {
     if (at == null)
       at = AtBack;
-
-    slots.set(con.slot, con);
 
     var group: ConnectionList<SlotType>;
     if (groupId == null) {
@@ -85,34 +77,49 @@ class SlotMap<SlotType> {
     }
   }
 
-  public function get(slot: Slot<SlotType>): Connection<SlotType> {
-    return slots.get(slot);
+  public function get(slot: Slot<SlotType>): Null<Connection<SlotType>> {
+    for (group in groups) {
+      for (conn in group) {
+        if (equalSlots(conn.slot, slot)) {
+          return conn;
+        }
+      }
+    }
+    return null;
   }
 
   public function has(slot: Slot<SlotType>): Bool {
-    return slots.get(slot) != null;
+    return this.get(slot) != null;
   }
 
   public function disconnect(slot: Slot<SlotType>): Bool {
-    var con = slots.get(slot);
-    if (con == null)
-      return false;
+    var removed = false;
+    for (key in groups.keys()) {
+      var value = groups.get(key);
+      var list = value.filter(function(conn) {
+        if (!equalSlots(conn.slot, slot)) {
+          return true;
+        }
 
-    slots.remove(slot);
-    con.connected = false;
+        conn.connected = false;
+        removed = true;
+        return false;
+      });
+      groups.set(key, list);
+    }
 
-    return true;
+    return removed;
   }
 
   public function disconnectGroup(groupId: Int): Bool {
     var group = groups.get(groupId);
-    if (group == null)
+    if (group == null) {
       return false;
+    }
 
     groups.remove(groupId);
 
     for (con in group) {
-      slots.remove(con.slot);
       con.connected = false;
     }
 
@@ -125,8 +132,16 @@ class SlotMap<SlotType> {
   }
 
   function get_length(): Int {
-    return Lambda.count(slots);
+    var count = 0;
+    for (group in groups) {
+      count += group.length;
+    }
+    return count;
+  }
+
+  inline function equalSlots<SlotType>(aSlot: SlotType, bSlot: SlotType): Bool {
+    return Reflect.compareMethods(aSlot, bSlot);
   }
 }
 
-typedef ConnectionList<SlotType> = List<Connection<SlotType>>;
+typedef ConnectionList<SlotType:Function> = List<Connection<SlotType>>;

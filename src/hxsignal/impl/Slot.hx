@@ -21,9 +21,11 @@
 
 package hxsignal.impl;
 
+import haxe.Constraints.Function;
+
 /**
  * ...
  * @author German Allemand
  */
 @:callable
-abstract Slot<T>(T) from T {}
+abstract Slot<T:Function>(T) from T {}

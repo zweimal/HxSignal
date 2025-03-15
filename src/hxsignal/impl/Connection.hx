@@ -21,12 +21,13 @@
 
 package hxsignal.impl;
 
+import haxe.Constraints.Function;
 import hxsignal.Signal;
 
 /**
   Defines the basic properties of an slot associated with a Signal.
 **/
-class Connection<SlotType> {
+class Connection<SlotType:Function> {
   /**
     The slot to be called when signal is emitted
   **/

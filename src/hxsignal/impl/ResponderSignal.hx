@@ -21,22 +21,21 @@
 
 package hxsignal.impl;
 
-#if macro
-import haxe.macro.Expr;
-#end
+import haxe.Constraints.Function;
 
 /**
  * ...
  * @author German Allemand
  */
-abstract class ResponderSignal<SlotType, R> extends SignalBase<SlotType> {
+ #if !haxe3 abstract #end
+class ResponderSignal<SlotType:Function, R> extends SignalBase<SlotType> {
   public var resultsProcessor: Array<R> -> R;
 
   function doEmitWithResult(slotCaller: Slot<SlotType> -> R): R {
     var result = null;
     var all = [];
 
-    this.doEmit(slot -> all.push(slotCaller(slot)));
+    this.doEmit(function (slot) return all.push(slotCaller(slot)));
 
     if (resultsProcessor != null)
       result = resultsProcessor(all);

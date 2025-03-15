@@ -25,11 +25,11 @@ package hxsignal.impl;
   Signal that calls slots with two arguements.
   @author German Allemand
 **/
-class Signal2<T1, T2> extends SignalBase<(T1, T2) -> Void> {
+class Signal2<T1, T2> extends SignalBase<T1 -> T2 -> Void> {
   /**
     Calls the slots with two arguments.
   **/
   public function emit(p1: T1, p2: T2): Void {
-    this.doEmit(slot -> slot(p1, p2));
+    this.doEmit(function (slot) return slot(p1, p2));
   }
 }

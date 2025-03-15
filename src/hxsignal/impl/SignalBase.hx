@@ -21,6 +21,7 @@
 
 package hxsignal.impl;
 
+import haxe.Constraints.Function;
 import hxsignal.impl.SlotMap;
 import hxsignal.Signal;
 
@@ -30,7 +31,8 @@ using Lambda;
  * ...
  * @author German Allemand
  */
-abstract class SignalBase<SlotType> {
+#if !haxe3 abstract #end
+class SignalBase<SlotType:Function> {
   var emitting: Bool;
 
   /**
@@ -82,8 +84,8 @@ abstract class SignalBase<SlotType> {
 
   inline function doEmit(slotCaller: Slot<SlotType> -> Void): Void {
     emitting = true;
-    for (g in slots.groups) {
-      for (con in g) {
+    for (group in slots.groups) {
+      for (con in group) {
         if (con.connected && !con.blocked) {
           con.calledTimes++;
           slotCaller(con.slot);

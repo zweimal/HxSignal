@@ -1,0 +1,6 @@
+# @install: lix --silent download "haxelib:/tink_streams#0.4.0" into tink_streams/0.4.0/haxelib
+-lib tink_core
+-cp ${HAXE_LIBCACHE}/tink_streams/0.4.0/haxelib/src
+-D tink_streams=0.4.0
+# temp for development, delete this file when pure branch merged
+-D pure

@@ -1,0 +1,3 @@
+tests.hxml
+
+-python bin/python/signal.py
