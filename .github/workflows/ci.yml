@@ -23,6 +23,9 @@ jobs:
           - node
           - java -D jvm
           - cs
+        exclude:
+          - haxe: 3.4.7
+            target: java -D jvm
         
     steps:
       - name: Git Checkout
