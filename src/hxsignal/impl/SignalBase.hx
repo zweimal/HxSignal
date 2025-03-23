@@ -32,6 +32,7 @@ using Lambda;
  * @author German Allemand
  */
 #if !haxe3 abstract #end
+
 class SignalBase<SlotType:Function> {
   var emitting: Bool;
 

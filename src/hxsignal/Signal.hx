@@ -21,13 +21,22 @@
 
 package hxsignal;
 
+#if macro
+import haxe.Constraints.Function;
+import haxe.macro.Expr;
+#end
+
 /**
  * ...
  * @author German Allemand
  */
 #if !macro @:genericBuild(hxsignal.macro.SignalMacro.build()) #end
 class Signal<SlotType> {
-  public function new() {};
+  public function new() {}
+
+  static public function createSignal() {}
+
+  static public function signal() {}
 
   /**
     Connects an slot to the signal.

@@ -1,19 +1,21 @@
 package;
 
 import hxsignal.Signal;
+import hxsignal.Signal.*;
 
 /**
  * ...
  * @author German Allemand
  */
 class Emitter {
-  public var signal0(default, null) = new Signal<Void -> Void>();
-  public var signal1(default, null) = new Signal<String -> Void>();
-  public var signal2(default, null) = new Signal<Emitter -> Int -> Void>();
-  public var signal0r(default, null) = new Signal<Void -> Int>();
+  public var signal0(default, null): Signal<Void -> Void> = createSignal();
+  public var signal1(default, null): Signal<String -> Void> = signal();
+  public var signal2(default, null): Signal<Emitter -> Int -> Void> = signal();
+  public var signal0r(default, null): Signal<Void -> Int> = signal();
   public var signal2r(default, null) = new Signal<Int -> Int -> Int>();
 
-  public function new() {}
+  public function new() {
+  }
 
   public function action0(): Void {
     signal0.emit();

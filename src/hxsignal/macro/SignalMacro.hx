@@ -3,7 +3,6 @@ package hxsignal.macro;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
-import haxe.PosInfos;
 
 using haxe.macro.Tools;
 
@@ -17,10 +16,17 @@ class SignalMacro {
     var type = Context.getLocalType();
     switch (type) {
       case TInst(_.get() => {pack: ["hxsignal"], name: "Signal"}, params):
-        switch (params[0]) {
-          case TFun(args, ret):
+        switch (params) {
+          case [TFun(args, ret)]:
             var newType = getSignalType(args, ret);
             return newType;
+
+          case []:
+            return TPath({pack: ["hxsignal", "macro"], name: "SignalInfer"}).toType();
+
+          case [TMono(t)]:
+            trace(t);
+            throw new Error("Signal: Cannot infer the Signal type, use Signal.createSignal() instead.", Context.currentPos());
 
           default:
         }

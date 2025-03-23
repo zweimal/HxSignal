@@ -30,6 +30,6 @@ class ResponderSignal3<T1, T2, T3, R> extends ResponderSignal<T1 -> T2 -> T3 -> 
     Calls the slots with three arguments.
   **/
   public function emit(p1: T1, p2: T2, p3: T3): R {
-    return this.doEmitWithResult(function (slot) return slot(p1, p2, p3));
+    return this.doEmitWithResult(function(slot) return slot(p1, p2, p3));
   }
 }

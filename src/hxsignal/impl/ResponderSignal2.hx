@@ -30,6 +30,6 @@ class ResponderSignal2<T1, T2, R> extends ResponderSignal<T1 -> T2 -> R, R> {
     Calls the slots with two arguments.
   **/
   public function emit(p1: T1, p2: T2): R {
-    return this.doEmitWithResult(function (slot) return slot(p1, p2));
+    return this.doEmitWithResult(function(slot) return slot(p1, p2));
   }
 }

@@ -30,6 +30,6 @@ class Signal3<T1, T2, T3> extends SignalBase<T1 -> T2 -> T3 -> Void> {
     Calls the slots with three arguments.
   **/
   public function emit(p1: T1, p2: T2, p3: T3): Void {
-    this.doEmit(function (slot) return slot(p1, p2, p3));
+    this.doEmit(function(slot) return slot(p1, p2, p3));
   }
 }
