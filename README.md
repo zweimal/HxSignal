@@ -7,18 +7,26 @@ Basic usage
 -----------
 ```haxe
 // initialisation
-var voidSignal  = new Signal<Void -> Void>();
-var eventSignal = new Signal<AnyObject -> String -> Void>();
-var signal1     = new Signal<Int -> Void>();
+var voidSignal  = new Signal<() -> Void>();
+// In haxe 3: var voidSignal  = new Signal<Void -> Void>();
+var eventSignal = new Signal<(AnyObject, String) -> Void>();
+// In haxe 3: var eventSignal = new Signal<AnyObject -> String -> Void>();
+
+// New in version 0.9.3:
+var signal1: Signal<Int -> Void> = Signal.createSignal();
+// or
+var signal1: Signal<Int -> Void> = Signal.signal();
+// or if you import hxsignal.Signal.*;
+var signal1: Signal<Int -> Void> = signal();
 
 // connecting, adding or binding slot
-voidSignal.connect(function() {});
+voidSignal.connect(() -> {});
 
 // connecting once (disconnected the first time it is called)
-eventSignal.connect(function(origin, type) {}, Once);
+eventSignal.connect((origin, type) -> {}, Once);
 
 // disconnecting slot
-function slot1(num : Int) : Void { }
+function slot1(num: Int): Void { }
 
 signal1.disconnect(slot1);
 
@@ -32,7 +40,7 @@ Advanced usage
 --------------
 ```haxe 
 // connecting n times (disconnected the nth time it is called)
-eventSignal.connect(function(origin, type) {}, Times(n));
+eventSignal.connect((origin, type) -> {}, Times(n));
 
 // Add slots to groups
 signal1.connect(slot1, 1); // slot1 added to group 1
@@ -50,12 +58,12 @@ Responding a signal
 -------------------
 ```haxe
 // slot that adds 1 to emitted value
-function add1(value : Int) : Int {
+function add1(value: Int) : Int {
 	return value + 1;
 }
 
 // slot that add 2 to emitted value
-function add2(value : Int) : Int {
+function add2(value: Int) : Int {
 	return value + 2;
 }
 
@@ -90,4 +98,4 @@ Also
 - `block(slot, true)` // block slot (not called) until block(slot, false) is called
 - `isBlock(slot)`
 - `numSlots` // amount of slot connected
-- and more features are coming
+- Haxe 3 and 4 compatibility
