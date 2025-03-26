@@ -21,15 +21,22 @@
 
 package hxsignal.impl;
 
+import hxsignal.impl.Slot;
+
 /**
   Signal that calls slots with no arguments.
   @author German Allemand
 **/
-class Signal0 extends SignalBase<Void -> Void> {
+@:forward
+abstract Signal0(SignalObj<Void -> Void>) to SignalObj<Void -> Void> {
+  public function new() {
+    this = new SignalObj<Void -> Void>(Slot0.call);
+  }
+
   /**
     Calls the slots with no arguments.
   **/
-  public function emit(): Void {
-    this.doEmit(function(slot) return slot());
+  public inline function emit(): Void {
+    this.emit();
   }
 }

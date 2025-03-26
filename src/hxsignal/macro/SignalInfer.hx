@@ -23,13 +23,14 @@ abstract SignalInfer(Null<Dynamic>) {
   #if macro
   static function inferSignal(pos: Position): Null<Expr> {
     var type = Context.getExpectedType();
+    // trace("expected type: " + type);
     if (type != null) {
       switch (type) {
-        case TInst(_.get() => {pack: ["hxsignal", "impl"], name: name}, _) if (name.indexOf("Signal") != -1):
-          if (!validSignals.match(name)) {
-            throw new Error("Signal: " + name + " is an abstract class.", pos);
-          }
+        case TAbstract(_.get() => {pack: ["hxsignal", "impl"], name: name}, _) if (name.indexOf("Signal") != -1):
           return getExpr(type, pos);
+
+        case TInst(_.get() => {pack: ["hxsignal", "impl"], name: name}, _) if (name.indexOf("Signal") != -1):
+          throw new Error("Signal: " + name + " is an abstract class.", pos);
 
         case TInst(_.get() => {pack: ["hxsignal"], name: "Signal"}, _):
           return getExpr(type, pos);

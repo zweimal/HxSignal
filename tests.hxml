@@ -1,4 +1,5 @@
 -main Test
+--dce full
 -cp src 
 -cp tests
 -debug

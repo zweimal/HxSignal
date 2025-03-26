@@ -21,15 +21,22 @@
 
 package hxsignal.impl;
 
+import hxsignal.impl.Slot;
+
 /**
   Signal that calls slots with one arguement.
   @author German Allemand
 **/
-class Signal1<T1> extends SignalBase<T1 -> Void> {
+@:forward
+abstract Signal1<T1>(SignalObj<T1 -> Void>) to SignalObj<T1 -> Void> {
+  public function new() {
+    this = new SignalObj<T1 -> Void>(Slot1.call);
+  }
+
   /**
     Calls the slots with one argument.
   **/
-  public function emit(p1: T1): Void {
-    this.doEmit(function(slot) return slot(p1));
+  public inline function emit(a1: T1): Void {
+    this.emit(a1);
   }
 }

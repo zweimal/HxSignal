@@ -21,37 +21,35 @@
 
 package hxsignal.impl;
 
-import haxe.Rest;
 import haxe.Constraints.Function;
+import haxe.Rest;
+import hxsignal.ResultProcessor;
+
+typedef RSlotCaller<T:Function, R> = Slot<T> -> Rest<Any> -> R;
 
 /**
  * ...
  * @author German Allemand
  */
-@:callable
-@:generic
-abstract Slot<T:Function>(T) from T to T {}
+class RSignalObj<SlotType:Function, R> extends SignalObj<SlotType> {
+  static final noopProcessor = new NoOpResultProcessor();
 
-class Slot0 {
-  public static function call<R>(slot: Slot<Void -> R>, args: Rest<Any>): R {
-    return slot();
+  public var resultsProcessor: ResultProcessor<R> = cast noopProcessor;
+
+  var actualSlotCaller: RSlotCaller<SlotType, R>;
+
+  public function new(slotCaller: RSlotCaller<SlotType, R>) {
+    super(this.forwardCall);
+    this.actualSlotCaller = slotCaller;
   }
-}
 
-class Slot1 {
-  public static function call<T1, R>(slot: Slot<T1 -> R>, args: Rest<Any>): R {
-    return slot(args[0]);
+  function forwardCall(slot: Slot<SlotType>, ...args) {
+    this.resultsProcessor.afterSlotCalled(this.actualSlotCaller(slot, ...args));
   }
-}
 
-class Slot2 {
-  public static function call<T1, T2, R>(slot: Slot<T1 -> T2 -> R>, args: Rest<Any>): R {
-    return slot(args[0], args[1]);
-  }
-}
-
-class Slot3 {
-  public static function call<T1, T2, T3, R>(slot: Slot<T1 -> T2 -> T3 -> R>, args: Rest<Any>): R {
-    return slot(args[0], args[1], args[2]);
+  override public function emit(...args): R {
+    this.resultsProcessor.beforeStart();
+    super.emit(...args);
+    return this.resultsProcessor.getFinalResult();
   }
 }

@@ -21,24 +21,19 @@
 
 package hxsignal.impl;
 
-import haxe.Constraints.Function;
+import hxsignal.impl.Slot;
 
 /**
- * ...
- * @author German Allemand
- */
-#if !haxe3 abstract #end class ResponderSignal<SlotType:Function, R> extends SignalBase<SlotType> {
-  public var resultsProcessor: Array<R> -> R;
+  Signal that calls slots with one arguement.
+  @author German Allemand
+**/
+@:forward
+abstract RSignal1<T1, R>(RSignalObj<T1 -> R, R>) to RSignalObj<T1 -> R, R> {
+  public function new() {
+    this = new RSignalObj<T1 -> R, R>(Slot1.call);
+  }
 
-  function doEmitWithResult(slotCaller: Slot<SlotType> -> R): R {
-    var result = null;
-    var all = [];
-
-    this.doEmit(function(slot) return all.push(slotCaller(slot)));
-
-    if (resultsProcessor != null)
-      result = resultsProcessor(all);
-
-    return result;
+  public inline function emit(a1: T1): R {
+    return this.emit(a1);
   }
 }

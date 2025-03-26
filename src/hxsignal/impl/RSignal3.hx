@@ -21,15 +21,19 @@
 
 package hxsignal.impl;
 
+import hxsignal.impl.Slot;
+
 /**
-  Signal that calls slots with one arguement.
+  Signal that calls slots with three arguements.
   @author German Allemand
 **/
-class ResponderSignal1<T1, R> extends ResponderSignal<T1 -> R, R> {
-  /**
-    Calls the slots with one argument.
-  **/
-  public function emit(p1: T1): R {
-    return this.doEmitWithResult(function(slot) return slot(p1));
+@:forward
+abstract RSignal3<T1, T2, T3, R>(RSignalObj<T1 -> T2 -> T3 -> R, R>) to RSignalObj<T1 -> T2 -> T3 -> R, R> {
+  public function new() {
+    this = new RSignalObj<T1 -> T2 -> T3 -> R, R>(Slot3.call);
+  }
+
+  public inline function emit(a1: T1, a2: T2, a3: T3): R {
+    return this.emit(a1, a2, a3);
   }
 }

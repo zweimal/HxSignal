@@ -21,15 +21,22 @@
 
 package hxsignal.impl;
 
+import hxsignal.impl.Slot;
+
 /**
   Signal that calls slots with three arguements.
   @author German Allemand
 **/
-class Signal3<T1, T2, T3> extends SignalBase<T1 -> T2 -> T3 -> Void> {
+@:forward
+abstract Signal2<T1, T2, T3>(SignalObj<T1 -> T2 -> T3 -> Void>) to SignalObj<T1 -> T2 -> T3 -> Void> {
+  public function new() {
+    this = new SignalObj<T1 -> T2 -> T3 -> Void>(Slot3.call);
+  }
+
   /**
     Calls the slots with three arguments.
   **/
-  public function emit(p1: T1, p2: T2, p3: T3): Void {
-    this.doEmit(function(slot) return slot(p1, p2, p3));
+  public inline function emit(a1: T1, a2: T2, p3: T3): Void {
+    this.emit(a1, a2, a3);
   }
 }

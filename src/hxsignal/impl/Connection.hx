@@ -49,9 +49,9 @@ class Connection<SlotType:Function> {
 
   public var groupId(default, default): Int;
 
-  var signal: SignalBase<SlotType>;
+  var signal: SignalObj<SlotType>;
 
-  public function new(signal: SignalBase<SlotType>, slot: Slot<SlotType>, times: ConnectionTimes) {
+  public function new(signal: SignalObj<SlotType>, slot: Slot<SlotType>, times: ConnectionTimes) {
     this.signal = signal;
     if (slot == null)
       throw "Slot cannot be null";
