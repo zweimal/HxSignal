@@ -21,15 +21,37 @@
 
 package hxsignal.impl;
 
+import haxe.Constraints.Function;
+import hxsignal.impl.Rest;
+import hxsignal.ResultProcessor;
+
 /**
-  Signal that calls slots with one arguement.
-  @author German Allemand
-**/
-class ResponderSignal1<T1, R> extends ResponderSignal<T1 -> R, R> {
-  /**
-    Calls the slots with one argument.
-  **/
-  public function emit(p1: T1): R {
-    return this.doEmitWithResult(function(slot) return slot(p1));
+ * ...
+ * @author German Allemand
+ */
+class RSignalObj<SlotType:Function, R> extends SignalObj<SlotType> {
+  #if haxe4 
+  static final
+  #else 
+  static var 
+  #end 
+  noopProcessor = new NoOpResultProcessor();
+
+  public var resultsProcessor: ResultProcessor<R> = cast noopProcessor;
+
+  public function new() {
+    super();
   }
+
+  #if (js || python || hl || hxsignal_dynamic)
+  override public function emit(args: Rest<Any>): #if haxe4 R #else Any #end {
+    this.resultsProcessor.beforeStart();
+    this.doEmit(
+      function(slot) {
+        return this.resultsProcessor.afterSlotCalled(#if haxe4 inline #end Reflect.callMethod(null, slot, args));
+      }
+    );
+    return this.resultsProcessor.getFinalResult();
+  }
+  #end
 }

@@ -77,7 +77,7 @@ class SlotMap<SlotType:Function> {
     }
   }
 
-  public function get(slot: Slot<SlotType>): Null<Connection<SlotType>> {
+  public function get(slot: SlotType): Null<Connection<SlotType>> {
     for (group in groups) {
       for (conn in group) {
         if (equalSlots(conn.slot, slot)) {
@@ -88,11 +88,11 @@ class SlotMap<SlotType:Function> {
     return null;
   }
 
-  public function has(slot: Slot<SlotType>): Bool {
+  public function has(slot: SlotType): Bool {
     return this.get(slot) != null;
   }
 
-  public function disconnect(slot: Slot<SlotType>): Bool {
+  public function disconnect(slot: SlotType): Bool {
     var removed = false;
     for (key in groups.keys()) {
       var value = groups.get(key);

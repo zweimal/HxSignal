@@ -22,14 +22,33 @@
 package hxsignal.impl;
 
 /**
-  Signal that calls slots with no arguments.
+  Signal that calls slots with one arguement.
   @author German Allemand
 **/
-class ResponderSignal0<R> extends ResponderSignal<Void -> R, R> {
-  /**
-    Calls the slots with no arguments.
-  **/
-  public function emit(): R {
-    return this.doEmitWithResult(function(slot) return slot());
+@:forward
+abstract RSignal1<T1, R>(RSignalObj<T1 -> R, R>) to RSignalObj<T1 -> R, R> {
+  public inline function new() {
+    this = new RSignalObj<T1 -> R, R>();
   }
+
+  #if (js || python || hl || hxsignal_dynamic)
+  public inline function emit(a1: T1): R {
+    return this.emit(
+      #if haxe4
+      a1
+      #else
+      [a1]
+      #end
+    );
+  }
+  #else
+  @:access(hxsignal.impl.SignalObj)
+  public function emit(a1: T1): R {
+    this.resultsProcessor.beforeStart();
+    this.doEmit(function(slot) {
+      return this.resultsProcessor.afterSlotCalled(slot(a1));
+    });
+    return this.resultsProcessor.getFinalResult();
+  }
+  #end
 }

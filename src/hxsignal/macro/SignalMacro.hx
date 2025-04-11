@@ -49,7 +49,7 @@ class SignalMacro {
       case TAbstract(_.get() => {pack: [], name: "Void"}, []):
 
       case _:
-        className = "Responder" + className;
+        className = "R" + className;
         params.push(TPType(ret.toComplexType()));
     }
 

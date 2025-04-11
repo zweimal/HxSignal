@@ -31,7 +31,7 @@ class Connection<SlotType:Function> {
   /**
     The slot to be called when signal is emitted
   **/
-  public var slot(default, null): Slot<SlotType>;
+  public var slot(default, null): SlotType;
 
   /**
     Amount of times slot has to called before autodisconnect it
@@ -49,9 +49,9 @@ class Connection<SlotType:Function> {
 
   public var groupId(default, default): Int;
 
-  var signal: SignalBase<SlotType>;
+  var signal: SignalObj<SlotType>;
 
-  public function new(signal: SignalBase<SlotType>, slot: Slot<SlotType>, times: ConnectionTimes) {
+  public function new(signal: SignalObj<SlotType>, slot: SlotType, times: ConnectionTimes) {
     this.signal = signal;
     if (slot == null)
       throw "Slot cannot be null";

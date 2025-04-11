@@ -22,18 +22,15 @@
 package hxsignal.impl;
 
 import haxe.Constraints.Function;
+import hxsignal.impl.Rest;
 import hxsignal.impl.SlotMap;
 import hxsignal.Signal;
-
-using Lambda;
 
 /**
  * ...
  * @author German Allemand
  */
-#if !haxe3 abstract #end
-
-class SignalBase<SlotType:Function> {
+class SignalObj<SlotType:Function> {
   var emitting: Bool;
 
   /**
@@ -47,7 +44,7 @@ class SignalBase<SlotType:Function> {
   var slots: SlotMap<SlotType>;
 
   public function new() {
-    slots = new SlotMap();
+    this.slots = new SlotMap();
   }
 
   public function connect(slot: SlotType, ?times: ConnectionTimes, ?groupId: Int = null, ?at: ConnectPosition = null): Void {
@@ -57,18 +54,18 @@ class SignalBase<SlotType:Function> {
     if (!updateConnection(slot, times)) {
       var conn = new Connection(this, slot, times);
 
-      slots.insert(conn, groupId, at);
+      this.slots.insert(conn, groupId, at);
     }
   }
 
   function updateConnection(slot: SlotType, times: ConnectionTimes, ?groupId: Int, ?at: ConnectPosition): Bool {
-    var con = slots.get(slot);
+    var con = this.slots.get(slot);
 
     if (con == null)
       return false;
 
     if ((groupId != null && con.groupId != groupId) || at != null) {
-      slots.disconnect(slot);
+      this.slots.disconnect(slot);
       return false;
     }
 
@@ -80,11 +77,20 @@ class SignalBase<SlotType:Function> {
   }
 
   public function isConnected(slot: SlotType): Bool {
-    return slots.has(slot);
+    return this.slots.has(slot);
   }
 
-  inline function doEmit(slotCaller: Slot<SlotType> -> Void): Void {
-    emitting = true;
+  #if (js || python || hl || hxsignal_dynamic)
+  public function emit(args: Rest<Any>): Any {
+    this.doEmit(function(slot) {
+      #if haxe4 inline #end Reflect.callMethod(null, slot, args);
+    });
+    return null;
+  }
+  #end
+
+  inline function doEmit(slotCaller: SlotType -> Void): Void {
+    this.emitting = true;
     for (group in slots.groups) {
       for (con in group) {
         if (con.connected && !con.blocked) {
@@ -92,7 +98,7 @@ class SignalBase<SlotType:Function> {
           slotCaller(con.slot);
 
           if (!con.connected)
-            slots.disconnect(con.slot);
+            this.slots.disconnect(con.slot);
 
           if (con.times == Once)
             con.times = Times(1);
@@ -100,18 +106,18 @@ class SignalBase<SlotType:Function> {
           switch (con.times) {
             case Times(t):
               if (t <= con.calledTimes)
-                slots.disconnect(con.slot);
+                this.slots.disconnect(con.slot);
 
             case _:
           }
         }
       }
     }
-    emitting = false;
+    this.emitting = false;
   }
 
   public function block(slot: SlotType, flag: Bool): Void {
-    var con = slots.get(slot);
+    var con = this.slots.get(slot);
     if (con == null)
       return;
 
@@ -119,7 +125,7 @@ class SignalBase<SlotType:Function> {
   }
 
   public function isBlocked(slot: SlotType): Bool {
-    var con = slots.get(slot);
+    var con = this.slots.get(slot);
     if (con == null)
       return false;
 
@@ -127,17 +133,17 @@ class SignalBase<SlotType:Function> {
   }
 
   public function disconnect(slot: SlotType): Bool {
-    return slots.disconnect(slot);
+    return this.slots.disconnect(slot);
   }
 
   public function disconnectAll(): Void {
     if (emitting)
-      slots.disconnectAll();
+      this.slots.disconnectAll();
     else
-      slots.clear();
+      this.slots.clear();
   }
 
   public function disconnectGroup(id: Int): Bool {
-    return slots.disconnectGroup(id);
+    return this.slots.disconnectGroup(id);
   }
 }

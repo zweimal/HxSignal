@@ -22,14 +22,33 @@
 package hxsignal.impl;
 
 /**
-  Signal that calls slots with two arguements.
+  Signal that calls slots with three arguements.
   @author German Allemand
 **/
-class ResponderSignal2<T1, T2, R> extends ResponderSignal<T1 -> T2 -> R, R> {
-  /**
-    Calls the slots with two arguments.
-  **/
-  public function emit(p1: T1, p2: T2): R {
-    return this.doEmitWithResult(function(slot) return slot(p1, p2));
+@:forward
+abstract RSignal3<T1, T2, T3, R>(RSignalObj<T1 -> T2 -> T3 -> R, R>) to RSignalObj<T1 -> T2 -> T3 -> R, R> {
+  public inline function new() {
+    this = new RSignalObj<T1 -> T2 -> T3 -> R, R>();
   }
+
+  #if (js || python || hl || hxsignal_dynamic)
+  public inline function emit(a1: T1, a2: T2, a3: T3): R {
+    return this.emit(
+      #if haxe4
+      a1, a2, a3
+      #else
+      [a1, a2, a3]
+      #end
+    );
+  }
+  #else
+  @:access(hxsignal.impl.SignalObj)
+  public function emit(a1: T1, a2: T2, a3: T3): R {
+    this.resultsProcessor.beforeStart();
+    this.doEmit(function(slot) {
+      return this.resultsProcessor.afterSlotCalled(slot(a1, a2, a3));
+    });
+    return this.resultsProcessor.getFinalResult();
+  }
+  #end
 }

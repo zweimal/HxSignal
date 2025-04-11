@@ -21,11 +21,34 @@
 
 package hxsignal.impl;
 
-import haxe.Constraints.Function;
-
 /**
- * ...
- * @author German Allemand
- */
-@:callable
-abstract Slot<T:Function>(T) from T {}
+  Signal that calls slots with two arguements.
+  @author German Allemand
+**/
+@:forward
+abstract RSignal2<T1, T2, R>(RSignalObj<T1 -> T2 -> R, R>) to RSignalObj<T1 -> T2 -> R, R> {
+  public inline function new() {
+    this = new RSignalObj<T1 -> T2 -> R, R>();
+  }
+
+  #if (js || python || hl || hxsignal_dynamic)
+  public inline function emit(a1: T1, a2: T2): R {
+    return this.emit(
+      #if haxe4
+      a1, a2
+      #else
+      [a1, a2]
+      #end
+    );
+  }
+  #else
+  @:access(hxsignal.impl.SignalObj)
+  public function emit(a1: T1, a2: T2): R {
+    this.resultsProcessor.beforeStart();
+    this.doEmit(function(slot) {
+      return this.resultsProcessor.afterSlotCalled(slot(a1, a2));
+    });
+    return this.resultsProcessor.getFinalResult();
+  }
+  #end
+}

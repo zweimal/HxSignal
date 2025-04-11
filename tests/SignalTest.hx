@@ -1,5 +1,6 @@
 package;
 
+import hxsignal.ResultProcessor;
 import haxe.unit.TestCase;
 import hxsignal.Signal;
 
@@ -9,6 +10,7 @@ import hxsignal.Signal;
  */
 class SignalTest extends TestCase {
   var emitter: Emitter;
+  var acc = new AccResultProcessor(0);
 
   public function new() {
     super();
@@ -77,7 +79,7 @@ class SignalTest extends TestCase {
   public function testSlot0r() {
     emitter.signal0r.connect(slot0r1, Once);
     emitter.signal0r.connect(slot0r2, Once);
-    emitter.signal0r.resultsProcessor = processResults;
+    emitter.signal0r.resultsProcessor = acc;
 
     var result = emitter.action0r();
     assertEquals(result, 3);
@@ -86,18 +88,11 @@ class SignalTest extends TestCase {
   public function testSlot2r() {
     emitter.signal2r.connect(slot2r, Once);
     emitter.signal2r.connect(slot2r1, Once);
-    emitter.signal2r.resultsProcessor = processResults;
+    emitter.signal2r.resultsProcessor = acc;
 
     var result = emitter.action2r(2, 3);
     trace('result: $result');
     assertEquals(result, 11);
-  }
-
-  function processResults(arr: Array<Int>): Int {
-    var result = 0;
-    for (i in arr)
-      result += i;
-    return result;
   }
 
   function slot0_1(): Void {
@@ -142,6 +137,27 @@ class SignalTest extends TestCase {
   }
 
   function slot2(origin: Emitter, num: Int): Void {
-    assertEquals(num, 2);
+    assertEquals(2, num);
+  }
+}
+
+class AccResultProcessor implements ResultProcessor<Int> {
+  private var initialValue: Int;
+  private var accumulator: Int;
+
+  public function new(initialValue: Int) {
+    this.initialValue = initialValue;
+  }
+
+  public function beforeStart() {
+    this.accumulator = initialValue;
+  }
+
+  public function afterSlotCalled(value: Int) {
+    this.accumulator += value;
+  }
+
+  public function getFinalResult(): Int {
+    return this.accumulator;
   }
 }

@@ -1,5 +1,6 @@
 package;
 
+import hxsignal.impl.RSignal1;
 import hxsignal.Signal;
 import hxsignal.Signal.*;
 
@@ -14,8 +15,7 @@ class Emitter {
   public var signal0r(default, null): Signal<Void -> Int> = signal();
   public var signal2r(default, null) = new Signal<Int -> Int -> Int>();
 
-  public function new() {
-  }
+  public function new() {}
 
   public function action0(): Void {
     signal0.emit();

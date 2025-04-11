@@ -21,24 +21,33 @@
 
 package hxsignal.impl;
 
-import haxe.Constraints.Function;
-
 /**
- * ...
- * @author German Allemand
- */
-#if !haxe3 abstract #end class ResponderSignal<SlotType:Function, R> extends SignalBase<SlotType> {
-  public var resultsProcessor: Array<R> -> R;
-
-  function doEmitWithResult(slotCaller: Slot<SlotType> -> R): R {
-    var result = null;
-    var all = [];
-
-    this.doEmit(function(slot) return all.push(slotCaller(slot)));
-
-    if (resultsProcessor != null)
-      result = resultsProcessor(all);
-
-    return result;
+  Signal that calls slots with no arguments.
+  @author German Allemand
+**/
+@:forward
+abstract RSignal0<R>(RSignalObj<Void -> R, R>) to RSignalObj<Void -> R, R> {
+  public inline function new() {
+    this = new RSignalObj<Void -> R, R>();
   }
+
+  #if (js || python || hl || hxsignal_dynamic)
+  public inline function emit(): R {
+    return this.emit(
+      #if haxe4
+      #else
+      []
+      #end
+    );
+  }
+  #else
+  @:access(hxsignal.impl.SignalObj)
+  public function emit(): R {
+    this.resultsProcessor.beforeStart();
+    this.doEmit(function(slot) {
+      return this.resultsProcessor.afterSlotCalled(slot());
+    });
+    return this.resultsProcessor.getFinalResult();
+  }
+  #end
 }

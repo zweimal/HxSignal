@@ -25,11 +25,31 @@ package hxsignal.impl;
   Signal that calls slots with two arguements.
   @author German Allemand
 **/
-class Signal2<T1, T2> extends SignalBase<T1 -> T2 -> Void> {
+@:forward
+abstract Signal2<T1, T2>(SignalObj<T1 -> T2 -> Void>) to SignalObj<T1 -> T2 -> Void> {
+  public inline function new() {
+    this = new SignalObj<T1 -> T2 -> Void>();
+  }
+
   /**
     Calls the slots with two arguments.
   **/
-  public function emit(p1: T1, p2: T2): Void {
-    this.doEmit(function(slot) return slot(p1, p2));
+  #if (js || python || hl || hxsignal_dynamic)
+  public inline function emit(a1: T1, a2: T2): Void {
+    this.emit(
+      #if haxe4
+      a1, a2
+      #else
+      [a1, a2]
+      #end
+    );
   }
+  #else
+  @:access(hxsignal.impl.SignalObj)
+  public function emit(a1: T1, a2: T2): Void {
+    this.doEmit(function(slot) {
+      slot(a1, a2);
+    });
+  }
+  #end
 }
