@@ -26,9 +26,9 @@ package hxsignal.impl;
   @author German Allemand
 **/
 @:forward
-abstract Signal2<T1, T2, T3>(SignalObj<T1 -> T2 -> T3 -> Void>) to SignalObj<T1 -> T2 -> T3 -> Void> {
+abstract Signal3<T1, T2, T3>(SignalObj<T1 -> T2 -> T3 -> Void>) to SignalObj<T1 -> T2 -> T3 -> Void> {
   public inline function new() {
-    this = new SignalObj<T1 -> T2 -> T3 -> Void>(Slot3.call);
+    this = new SignalObj<T1 -> T2 -> T3 -> Void>();
   }
 
   /**
